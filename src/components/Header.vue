@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Katalog', to: '/katalog' },
   { name: 'Über uns', to: '/ueber-uns' },
   { name: 'Kontakt', to: '/kontakt' },
+  { name: 'Admin', to: '/admin' },
 ]
 </script>
 
