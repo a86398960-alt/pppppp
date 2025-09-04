@@ -2,8 +2,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { PlusIcon, EyeIcon, EyeSlashIcon, BuildingOfficeIcon, HomeIcon } from '@heroicons/vue/24/outline'
-import { properties, type Property } from '../data/properties'
-import { companies, type Company } from '../data/companies'
+import { useProperties, useCompanies } from '../composables/useData'
+import type { Property, Company } from '../services/api'
+
+const { properties, addProperty } = useProperties()
+const { companies, addCompany } = useCompanies()
 
 const router = useRouter()
 const isAuthenticated = ref(false)
@@ -122,7 +125,7 @@ const removeFeatureField = (form: any, field: string, index: number) => {
   }
 }
 
-const submitProperty = () => {
+const submitProperty = async () => {
   // Clean up empty fields
   const cleanedProperty = {
     ...propertyForm.value,
@@ -130,19 +133,16 @@ const submitProperty = () => {
     features: propertyForm.value.features.filter(feature => feature.trim() !== '')
   }
   
-  // Add new ID
-  const newId = Math.max(...properties.map(p => p.id)) + 1
-  const newProperty: Property = {
-    ...cleanedProperty,
-    id: newId
+  try {
+    await addProperty(cleanedProperty)
+    alert('Immobilie erfolgreich hinzugefügt!')
+    resetPropertyForm()
+  } catch (error) {
+    alert('Fehler beim Hinzufügen der Immobilie: ' + error)
   }
-  
-  properties.push(newProperty)
-  alert('Immobilie erfolgreich hinzugefügt!')
-  resetPropertyForm()
 }
 
-const submitCompany = () => {
+const submitCompany = async () => {
   // Clean up empty fields
   const cleanedCompany = {
     ...companyForm.value,
@@ -154,16 +154,13 @@ const submitCompany = () => {
     }
   }
   
-  // Add new ID
-  const newId = Math.max(...companies.map(c => c.id)) + 1
-  const newCompany: Company = {
-    ...cleanedCompany,
-    id: newId
+  try {
+    await addCompany(cleanedCompany)
+    alert('Unternehmen erfolgreich hinzugefügt!')
+    resetCompanyForm()
+  } catch (error) {
+    alert('Fehler beim Hinzufügen des Unternehmens: ' + error)
   }
-  
-  companies.push(newCompany)
-  alert('Unternehmen erfolgreich hinzugefügt!')
-  resetCompanyForm()
 }
 
 const resetPropertyForm = () => {

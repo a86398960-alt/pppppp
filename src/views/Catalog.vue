@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { BuildingOfficeIcon, MapPinIcon, CurrencyEuroIcon, UsersIcon, CalendarIcon, PlusIcon, HomeIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
-import { companies, type Company, getAllIndustries } from '../data/companies'
-import { properties, type Property, getAllPropertyTypes } from '../data/properties'
+import { useProperties, useCompanies } from '../composables/useData'
+import type { Property, Company } from '../services/api'
+
+const { properties } = useProperties()
+const { companies } = useCompanies()
 
 const selectedCompany = ref<Company | null>(null)
 const selectedProperty = ref<Property | null>(null)
@@ -12,11 +15,16 @@ const selectedPropertyType = ref('')
 const activeTab = ref<'companies' | 'properties'>('properties')
 const currentImageIndex = ref(0)
 
-const industries = computed(() => getAllIndustries())
-const propertyTypes = computed(() => getAllPropertyTypes())
+const industries = computed(() => {
+  return [...new Set(companies.value.map(c => c.industry))].sort()
+})
+
+const propertyTypes = computed(() => {
+  return [...new Set(properties.value.map(p => p.type))].sort()
+})
 
 const filteredCompanies = computed(() => {
-  return companies.filter(company => {
+  return companies.value.filter(company => {
     const matchesSearch = company.name.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
                          company.description.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
                          company.industry.toLowerCase().includes(searchTerm.value.toLowerCase())
@@ -26,7 +34,7 @@ const filteredCompanies = computed(() => {
 })
 
 const filteredProperties = computed(() => {
-  return properties.filter(property => {
+  return properties.value.filter(property => {
     const matchesSearch = property.title.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
                          property.description.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
                          property.type.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
@@ -157,10 +165,10 @@ const openPropertyModal = (property: Property) => {
         
         <div class="mt-4 text-sm text-gray-600">
           <span v-if="activeTab === 'properties'">
-            {{ filteredProperties.length }} von {{ properties.length }} Immobilien
+            {{ filteredProperties.length }} von {{ properties.value.length }} Immobilien
           </span>
           <span v-else>
-            {{ filteredCompanies.length }} von {{ companies.length }} Unternehmen
+            {{ filteredCompanies.length }} von {{ companies.value.length }} Unternehmen
           </span>
         </div>
       </div>
