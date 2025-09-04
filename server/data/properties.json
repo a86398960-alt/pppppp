@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "title": "dsafsd",
+    "price": "234",
+    "location": "adf",
+    "type": "Wohnung",
+    "size": "34",
+    "description": "asdfa",
+    "image": "https://imgs.search.brave.com/hVpFnIpUiZ0Kl4YAYjys3liCInUFDIirWgnCRwwBFzg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZS1yZXNpemUubWVp/bmVzdGFkdC5kZS9p/bWFnZS1yZXNpemUv/djIvcmVzaXplP3c9/NDAwJmg9NDAwJnVy/bD1odHRwczovL2lt/YWdlLXNlcnZpY2Ut/dXBsb2FkLm1laW5l/c3RhZHQuZGUvaW1h/Z2Utc2VydmljZS11/cGxvYWQvdjEvOWIz/YWI3MWVkZS5qcGcm/c2lnbj0wZmEwYmRh/ZWJlYjQ1YTFiOGU1/Njk1MjM2ZjNkNTQz/NTNmNGE4YzJiZWUx/YTUxOTk3YjAzZWE2/ODNiM2U2Mzcy",
+    "id": 1
+  }
+]
