@@ -1,4 +1,4 @@
-const API_BASE_URL = `${window.location.protocol}//localhost:3001/api`;
+const API_BASE_URL = 'http://localhost:3001/api';
 import { authService } from './auth';
 
 export interface Property {
