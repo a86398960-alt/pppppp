@@ -893,7 +893,6 @@ const resetCompanyForm = () => {
     </div>
   </div>
 </template>
-</script>
 
 <style scoped>
 .card {
