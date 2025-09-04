@@ -168,13 +168,9 @@
             </div>
             
             <div class="form-group">
-              <label for="image">Bild URL:</label>
-              <input 
-                id="image"
-                v-model="newProperty.image" 
-                type="url" 
-                required 
-                class="form-input"
+              <ImageUpload
+                label="Immobilien-Bild"
+                v-model="newProperty.image"
               />
             </div>
             
@@ -255,13 +251,9 @@
             </div>
             
             <div class="form-group">
-              <label for="company-logo">Logo URL:</label>
-              <input 
-                id="company-logo"
-                v-model="newCompany.logo" 
-                type="url" 
-                required 
-                class="form-input"
+              <ImageUpload
+                label="Firmen-Logo"
+                v-model="newCompany.image"
               />
             </div>
             
@@ -300,6 +292,7 @@
 import { ref, onMounted } from 'vue'
 import { propertiesAPI, companiesAPI } from '../services/api'
 import { authService } from '../services/auth'
+import ImageUpload from '../components/ImageUpload.vue'
 
 const isAuthenticated = ref(false)
 const activeTab = ref('properties')
