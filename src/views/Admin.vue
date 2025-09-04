@@ -1,221 +1,294 @@
 <template>
-  <div class="admin-container">
-    <div class="admin-header">
-      <h1 class="admin-title">Admin Panel</h1>
-      <p class="admin-subtitle">Verwalten Sie Immobilien und Unternehmen</p>
-    </div>
-
-    <div class="admin-tabs">
-      <button 
-        @click="activeTab = 'properties'" 
-        :class="['tab-button', { active: activeTab === 'properties' }]"
-      >
-        Immobilien
-      </button>
-      <button 
-        @click="activeTab = 'companies'" 
-        :class="['tab-button', { active: activeTab === 'companies' }]"
-      >
-        Unternehmen
-      </button>
-    </div>
-
-    <!-- Properties Tab -->
-    <div v-if="activeTab === 'properties'" class="tab-content">
-      <div class="form-container">
-        <h2>Neue Immobilie hinzufügen</h2>
-        <form @submit.prevent="addProperty" class="property-form">
-          <div class="form-group">
-            <label for="title">Titel:</label>
-            <input 
-              id="title"
-              v-model="newProperty.title" 
-              type="text" 
-              required 
-              class="form-input"
+  <div class="min-h-screen bg-gray-50">
+    <!-- Login Form -->
+    <div v-if="!isAuthenticated" class="min-h-screen flex items-center justify-center">
+      <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <div class="text-center mb-8">
+          <h1 class="text-2xl font-bold text-gray-900">Admin Login</h1>
+          <p class="text-gray-600 mt-2">Melden Sie sich an, um das Admin Panel zu verwenden</p>
+        </div>
+        
+        <form @submit.prevent="handleLogin" class="space-y-6">
+          <div>
+            <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+              Benutzername
+            </label>
+            <input
+              id="username"
+              v-model="loginForm.username"
+              type="text"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="admin"
             />
           </div>
           
-          <div class="form-group">
-            <label for="price">Preis:</label>
-            <input 
-              id="price"
-              v-model="newProperty.price" 
-              type="text" 
-              required 
-              class="form-input"
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+              Passwort
+            </label>
+            <input
+              id="password"
+              v-model="loginForm.password"
+              type="password"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ihr Passwort"
             />
           </div>
           
-          <div class="form-group">
-            <label for="location">Standort:</label>
-            <input 
-              id="location"
-              v-model="newProperty.location" 
-              type="text" 
-              required 
-              class="form-input"
-            />
+          <div v-if="loginError" class="text-red-600 text-sm text-center">
+            {{ loginError }}
           </div>
           
-          <div class="form-group">
-            <label for="type">Typ:</label>
-            <select 
-              id="type"
-              v-model="newProperty.type" 
-              required 
-              class="form-input"
-            >
-              <option value="">Typ wählen</option>
-              <option value="Wohnung">Wohnung</option>
-              <option value="Haus">Haus</option>
-              <option value="Gewerbe">Gewerbe</option>
-              <option value="Grundstück">Grundstück</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="size">Größe:</label>
-            <input 
-              id="size"
-              v-model="newProperty.size" 
-              type="text" 
-              required 
-              class="form-input"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label for="description">Beschreibung:</label>
-            <textarea 
-              id="description"
-              v-model="newProperty.description" 
-              required 
-              class="form-textarea"
-            ></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="image">Bild URL:</label>
-            <input 
-              id="image"
-              v-model="newProperty.image" 
-              type="url" 
-              required 
-              class="form-input"
-            />
-          </div>
-          
-          <button type="submit" class="submit-button" :disabled="loading">
-            {{ loading ? 'Wird hinzugefügt...' : 'Immobilie hinzufügen' }}
+          <button
+            type="submit"
+            :disabled="loginLoading"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {{ loginLoading ? 'Anmelden...' : 'Anmelden' }}
           </button>
         </form>
-      </div>
-
-      <!-- Properties List -->
-      <div class="list-container">
-        <h3>Vorhandene Immobilien</h3>
-        <div v-if="loading" class="loading">Lade Daten...</div>
-        <div v-else-if="error" class="error">{{ error }}</div>
-        <div v-else class="properties-list">
-          <div v-for="property in properties" :key="property.id" class="property-item">
-            <img :src="property.image" :alt="property.title" class="property-image" />
-            <div class="property-info">
-              <h4>{{ property.title }}</h4>
-              <p class="property-price">{{ property.price }}</p>
-              <p class="property-location">{{ property.location }}</p>
-              <p class="property-type">{{ property.type }} • {{ property.size }}</p>
-            </div>
-            <button @click="deleteProperty(property.id)" class="delete-button">
-              Löschen
-            </button>
-          </div>
+        
+        <div class="mt-6 p-4 bg-gray-50 rounded-md">
+          <p class="text-sm text-gray-600 text-center">
+            <strong>Demo-Zugangsdaten:</strong><br>
+            Benutzername: admin<br>
+            Passwort: password
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Companies Tab -->
-    <div v-if="activeTab === 'companies'" class="tab-content">
-      <div class="form-container">
-        <h2>Neues Unternehmen hinzufügen</h2>
-        <form @submit.prevent="addCompany" class="company-form">
-          <div class="form-group">
-            <label for="company-name">Name:</label>
-            <input 
-              id="company-name"
-              v-model="newCompany.name" 
-              type="text" 
-              required 
-              class="form-input"
-            />
+    <!-- Admin Panel -->
+    <div v-else class="admin-container">
+      <div class="admin-header">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="admin-title">Admin Panel</h1>
+            <p class="admin-subtitle">Verwalten Sie Immobilien und Unternehmen</p>
           </div>
-          
-          <div class="form-group">
-            <label for="company-industry">Branche:</label>
-            <input 
-              id="company-industry"
-              v-model="newCompany.industry" 
-              type="text" 
-              required 
-              class="form-input"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label for="company-location">Standort:</label>
-            <input 
-              id="company-location"
-              v-model="newCompany.location" 
-              type="text" 
-              required 
-              class="form-input"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label for="company-description">Beschreibung:</label>
-            <textarea 
-              id="company-description"
-              v-model="newCompany.description" 
-              required 
-              class="form-textarea"
-            ></textarea>
-          </div>
-          
-          <div class="form-group">
-            <label for="company-logo">Logo URL:</label>
-            <input 
-              id="company-logo"
-              v-model="newCompany.logo" 
-              type="url" 
-              required 
-              class="form-input"
-            />
-          </div>
-          
-          <button type="submit" class="submit-button" :disabled="loading">
-            {{ loading ? 'Wird hinzugefügt...' : 'Unternehmen hinzufügen' }}
+          <button
+            @click="handleLogout"
+            class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+          >
+            Abmelden
           </button>
-        </form>
+        </div>
       </div>
 
-      <!-- Companies List -->
-      <div class="list-container">
-        <h3>Vorhandene Unternehmen</h3>
-        <div v-if="loading" class="loading">Lade Daten...</div>
-        <div v-else-if="error" class="error">{{ error }}</div>
-        <div v-else class="companies-list">
-          <div v-for="company in companies" :key="company.id" class="company-item">
-            <img :src="company.logo" :alt="company.name" class="company-logo" />
-            <div class="company-info">
-              <h4>{{ company.name }}</h4>
-              <p class="company-industry">{{ company.industry }}</p>
-              <p class="company-location">{{ company.location }}</p>
-              <p class="company-description">{{ company.description }}</p>
+      <div class="admin-tabs">
+        <button 
+          @click="activeTab = 'properties'" 
+          :class="['tab-button', { active: activeTab === 'properties' }]"
+        >
+          Immobilien
+        </button>
+        <button 
+          @click="activeTab = 'companies'" 
+          :class="['tab-button', { active: activeTab === 'companies' }]"
+        >
+          Unternehmen
+        </button>
+      </div>
+
+      <!-- Properties Tab -->
+      <div v-if="activeTab === 'properties'" class="tab-content">
+        <div class="form-container">
+          <h2>Neue Immobilie hinzufügen</h2>
+          <form @submit.prevent="addProperty" class="property-form">
+            <div class="form-group">
+              <label for="title">Titel:</label>
+              <input 
+                id="title"
+                v-model="newProperty.title" 
+                type="text" 
+                required 
+                class="form-input"
+              />
             </div>
-            <button @click="deleteCompany(company.id)" class="delete-button">
-              Löschen
+            
+            <div class="form-group">
+              <label for="price">Preis:</label>
+              <input 
+                id="price"
+                v-model="newProperty.price" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="location">Standort:</label>
+              <input 
+                id="location"
+                v-model="newProperty.location" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="type">Typ:</label>
+              <select 
+                id="type"
+                v-model="newProperty.type" 
+                required 
+                class="form-input"
+              >
+                <option value="">Typ wählen</option>
+                <option value="Wohnung">Wohnung</option>
+                <option value="Haus">Haus</option>
+                <option value="Gewerbe">Gewerbe</option>
+                <option value="Grundstück">Grundstück</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="size">Größe:</label>
+              <input 
+                id="size"
+                v-model="newProperty.size" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Beschreibung:</label>
+              <textarea 
+                id="description"
+                v-model="newProperty.description" 
+                required 
+                class="form-textarea"
+              ></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="image">Bild URL:</label>
+              <input 
+                id="image"
+                v-model="newProperty.image" 
+                type="url" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <button type="submit" class="submit-button" :disabled="loading">
+              {{ loading ? 'Wird hinzugefügt...' : 'Immobilie hinzufügen' }}
             </button>
+          </form>
+        </div>
+
+        <!-- Properties List -->
+        <div class="list-container">
+          <h3>Vorhandene Immobilien</h3>
+          <div v-if="loading" class="loading">Lade Daten...</div>
+          <div v-else-if="error" class="error">{{ error }}</div>
+          <div v-else class="properties-list">
+            <div v-for="property in properties" :key="property.id" class="property-item">
+              <img :src="property.image" :alt="property.title" class="property-image" />
+              <div class="property-info">
+                <h4>{{ property.title }}</h4>
+                <p class="property-price">{{ property.price }}</p>
+                <p class="property-location">{{ property.location }}</p>
+                <p class="property-type">{{ property.type }} • {{ property.size }}</p>
+              </div>
+              <button @click="deleteProperty(property.id)" class="delete-button">
+                Löschen
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Companies Tab -->
+      <div v-if="activeTab === 'companies'" class="tab-content">
+        <div class="form-container">
+          <h2>Neues Unternehmen hinzufügen</h2>
+          <form @submit.prevent="addCompany" class="company-form">
+            <div class="form-group">
+              <label for="company-name">Name:</label>
+              <input 
+                id="company-name"
+                v-model="newCompany.name" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="company-industry">Branche:</label>
+              <input 
+                id="company-industry"
+                v-model="newCompany.industry" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="company-location">Standort:</label>
+              <input 
+                id="company-location"
+                v-model="newCompany.location" 
+                type="text" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="company-description">Beschreibung:</label>
+              <textarea 
+                id="company-description"
+                v-model="newCompany.description" 
+                required 
+                class="form-textarea"
+              ></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="company-logo">Logo URL:</label>
+              <input 
+                id="company-logo"
+                v-model="newCompany.logo" 
+                type="url" 
+                required 
+                class="form-input"
+              />
+            </div>
+            
+            <button type="submit" class="submit-button" :disabled="loading">
+              {{ loading ? 'Wird hinzugefügt...' : 'Unternehmen hinzufügen' }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Companies List -->
+        <div class="list-container">
+          <h3>Vorhandene Unternehmen</h3>
+          <div v-if="loading" class="loading">Lade Daten...</div>
+          <div v-else-if="error" class="error">{{ error }}</div>
+          <div v-else class="companies-list">
+            <div v-for="company in companies" :key="company.id" class="company-item">
+              <img :src="company.image" :alt="company.name" class="company-logo" />
+              <div class="company-info">
+                <h4>{{ company.name }}</h4>
+                <p class="company-industry">{{ company.industry }}</p>
+                <p class="company-location">{{ company.location }}</p>
+                <p class="company-description">{{ company.description }}</p>
+              </div>
+              <button @click="deleteCompany(company.id)" class="delete-button">
+                Löschen
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -226,10 +299,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { propertiesAPI, companiesAPI } from '../services/api'
+import { authService } from '../services/auth'
 
+const isAuthenticated = ref(false)
 const activeTab = ref('properties')
 const loading = ref(false)
 const error = ref('')
+
+// Login form
+const loginForm = ref({
+  username: '',
+  password: ''
+})
+const loginLoading = ref(false)
+const loginError = ref('')
 
 // Properties data
 const properties = ref([])
@@ -240,7 +323,15 @@ const newProperty = ref({
   type: '',
   size: '',
   description: '',
-  image: ''
+  image: '',
+  rooms: '',
+  images: [],
+  features: [],
+  contact: {
+    email: 'info@immobilienmakler.de',
+    phone: '+49 89 123 456'
+  },
+  details: {}
 })
 
 // Companies data
@@ -250,14 +341,55 @@ const newCompany = ref({
   industry: '',
   location: '',
   description: '',
-  logo: ''
+  image: '',
+  employees: '',
+  founded: '',
+  revenue: '',
+  highlights: [],
+  contact: {
+    email: 'info@immobilienmakler.de',
+    phone: '+49 89 123 456'
+  }
 })
 
-// Load data on mount
+// Check authentication on mount
 onMounted(async () => {
-  await loadProperties()
-  await loadCompanies()
+  const isValid = await authService.verifyToken()
+  if (isValid) {
+    isAuthenticated.value = true
+    await loadProperties()
+    await loadCompanies()
+  }
 })
+
+// Authentication functions
+async function handleLogin() {
+  try {
+    loginLoading.value = true
+    loginError.value = ''
+    
+    await authService.login({
+      username: loginForm.value.username,
+      password: loginForm.value.password
+    })
+    
+    isAuthenticated.value = true
+    await loadProperties()
+    await loadCompanies()
+  } catch (err) {
+    loginError.value = err instanceof Error ? err.message : 'Login fehlgeschlagen'
+  } finally {
+    loginLoading.value = false
+  }
+}
+
+function handleLogout() {
+  authService.logout()
+  isAuthenticated.value = false
+  properties.value = []
+  companies.value = []
+  loginForm.value = { username: '', password: '' }
+}
 
 // Properties functions
 async function loadProperties() {
@@ -278,11 +410,7 @@ async function addProperty() {
   try {
     loading.value = true
     error.value = ''
-    const property = {
-      ...newProperty.value,
-      id: Date.now().toString()
-    }
-    await propertiesAPI.create(property)
+    await propertiesAPI.create(newProperty.value)
     await loadProperties()
     
     // Reset form
@@ -293,7 +421,15 @@ async function addProperty() {
       type: '',
       size: '',
       description: '',
-      image: ''
+      image: '',
+      rooms: '',
+      images: [],
+      features: [],
+      contact: {
+        email: 'info@immobilienmakler.de',
+        phone: '+49 89 123 456'
+      },
+      details: {}
     }
   } catch (err) {
     error.value = 'Fehler beim Hinzufügen der Immobilie'
@@ -303,7 +439,7 @@ async function addProperty() {
   }
 }
 
-async function deleteProperty(id: string) {
+async function deleteProperty(id: number) {
   try {
     loading.value = true
     error.value = ''
@@ -336,11 +472,7 @@ async function addCompany() {
   try {
     loading.value = true
     error.value = ''
-    const company = {
-      ...newCompany.value,
-      id: Date.now().toString()
-    }
-    await companiesAPI.create(company)
+    await companiesAPI.create(newCompany.value)
     await loadCompanies()
     
     // Reset form
@@ -349,7 +481,15 @@ async function addCompany() {
       industry: '',
       location: '',
       description: '',
-      logo: ''
+      image: '',
+      employees: '',
+      founded: '',
+      revenue: '',
+      highlights: [],
+      contact: {
+        email: 'info@immobilienmakler.de',
+        phone: '+49 89 123 456'
+      }
     }
   } catch (err) {
     error.value = 'Fehler beim Hinzufügen des Unternehmens'
@@ -359,7 +499,7 @@ async function addCompany() {
   }
 }
 
-async function deleteCompany(id: string) {
+async function deleteCompany(id: number) {
   try {
     loading.value = true
     error.value = ''
@@ -382,7 +522,6 @@ async function deleteCompany(id: string) {
 }
 
 .admin-header {
-  text-align: center;
   margin-bottom: 2rem;
 }
 

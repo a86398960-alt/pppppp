@@ -3,6 +3,7 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { verifyAdminCredentials, generateToken, requireAuth } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -172,6 +173,44 @@ app.delete('/api/companies/:id', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+// Auth endpoints
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password required' });
+    }
+    
+    const isValid = await verifyAdminCredentials(username, password);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    const token = generateToken(username);
+    res.json({ token, message: 'Login successful' });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.post('/api/auth/verify', (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ valid: false });
+  }
+  
+  const decoded = verifyToken(token);
+  res.json({ valid: !!decoded });
+});
+
+// Protect admin routes
+app.use('/api/properties', requireAuth);
+app.use('/api/companies', requireAuth);
 
 app.listen(PORT, () => {
   console.log(`Backend Server läuft auf http://localhost:${PORT}`);

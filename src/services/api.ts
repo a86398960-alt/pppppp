@@ -1,4 +1,5 @@
 const API_BASE_URL = `${window.location.protocol}//localhost:3001/api`;
+import { authService } from './auth';
 
 export interface Property {
   id: number
@@ -52,7 +53,9 @@ export interface Company {
 // Properties API
 export const propertiesAPI = {
   async getAll(): Promise<Property[]> {
-    const response = await fetch(`${API_BASE_URL}/properties`);
+    const response = await fetch(`${API_BASE_URL}/properties`, {
+      headers: authService.getAuthHeaders(),
+    });
     if (!response.ok) throw new Error('Fehler beim Laden der Immobilien');
     return response.json();
   },
@@ -62,6 +65,7 @@ export const propertiesAPI = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...authService.getAuthHeaders(),
       },
       body: JSON.stringify(property),
     });
@@ -74,6 +78,7 @@ export const propertiesAPI = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...authService.getAuthHeaders(),
       },
       body: JSON.stringify(property),
     });
@@ -84,6 +89,7 @@ export const propertiesAPI = {
   async delete(id: number): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/properties/${id}`, {
       method: 'DELETE',
+      headers: authService.getAuthHeaders(),
     });
     if (!response.ok) throw new Error('Fehler beim Löschen der Immobilie');
   }
@@ -92,7 +98,9 @@ export const propertiesAPI = {
 // Companies API
 export const companiesAPI = {
   async getAll(): Promise<Company[]> {
-    const response = await fetch(`${API_BASE_URL}/companies`);
+    const response = await fetch(`${API_BASE_URL}/companies`, {
+      headers: authService.getAuthHeaders(),
+    });
     if (!response.ok) throw new Error('Fehler beim Laden der Unternehmen');
     return response.json();
   },
@@ -102,6 +110,7 @@ export const companiesAPI = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...authService.getAuthHeaders(),
       },
       body: JSON.stringify(company),
     });
@@ -114,6 +123,7 @@ export const companiesAPI = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...authService.getAuthHeaders(),
       },
       body: JSON.stringify(company),
     });
@@ -124,6 +134,7 @@ export const companiesAPI = {
   async delete(id: number): Promise<void> {
     const response = await fetch(`${API_BASE_URL}/companies/${id}`, {
       method: 'DELETE',
+      headers: authService.getAuthHeaders(),
     });
     if (!response.ok) throw new Error('Fehler beim Löschen des Unternehmens');
   }
