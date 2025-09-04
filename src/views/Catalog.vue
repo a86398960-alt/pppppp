@@ -193,9 +193,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useProperties } from '../composables/useData'
+import { useProperties, useCompanies } from '../composables/useData'
 
-const { properties, companies, loading, error, loadData } = useProperties()
+const { properties, loading: propertiesLoading, error: propertiesError } = useProperties()
+const { companies, loading: companiesLoading, error: companiesError } = useCompanies()
+
+const loading = computed(() => propertiesLoading.value || companiesLoading.value)
+const error = computed(() => propertiesError.value || companiesError.value)
 
 const selectedCategory = ref('all')
 const searchTerm = ref('')
@@ -228,10 +232,6 @@ const filteredCompanies = computed(() => {
 
 const filteredItems = computed(() => {
   return [...filteredProperties.value, ...filteredCompanies.value]
-})
-
-onMounted(() => {
-  loadData()
 })
 </script>
 
