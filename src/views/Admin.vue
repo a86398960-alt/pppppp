@@ -508,7 +508,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useData } from '../composables/useData'
-import { apiService } from '../services/api'
+import { propertiesAPI, companiesAPI } from '../services/api'
 
 const { properties, companies, loadData } = useData()
 
@@ -622,7 +622,7 @@ const addProperty = async () => {
       features: propertyForm.value.features.filter(feature => feature.trim() !== '')
     }
 
-    await apiService.addProperty(cleanedProperty)
+    await propertiesAPI.create(cleanedProperty)
     await loadData()
     
     successMessage.value = 'Immobilie erfolgreich hinzugefügt!'
@@ -672,7 +672,7 @@ const addCompany = async () => {
       specializations: companyForm.value.specializations.filter(spec => spec.trim() !== '')
     }
 
-    await apiService.addCompany(cleanedCompany)
+    await companiesAPI.create(cleanedCompany)
     await loadData()
     
     successMessage.value = 'Unternehmen erfolgreich hinzugefügt!'
