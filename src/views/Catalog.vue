@@ -136,6 +136,10 @@
               <div class="absolute top-2 left-2 bg-blue-600 text-white px-2 py-1 rounded text-sm font-medium">
                 Immobilie
               </div>
+              <!-- Image counter if multiple images -->
+              <div v-if="property.images && property.images.length > 1" class="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                {{ property.images.length }} Bilder
+              </div>
             </div>
             <div class="p-6">
               <h3 class="text-xl font-bold text-gray-900 mb-2">{{ property.title }}</h3>
@@ -160,8 +164,8 @@
           >
             <div class="relative h-48 bg-gray-200">
               <img 
-                v-if="company.logo"
-                :src="company.logo" 
+                v-if="company.images && company.images.length > 0"
+                :src="company.images[0]" 
                 :alt="company.name"
                 class="w-full h-full object-cover"
               >
@@ -172,6 +176,10 @@
               </div>
               <div class="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded text-sm font-medium">
                 Unternehmen
+              </div>
+              <!-- Image counter if multiple images -->
+              <div v-if="company.images && company.images.length > 1" class="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                {{ company.images.length }} Bilder
               </div>
             </div>
             <div class="p-6">

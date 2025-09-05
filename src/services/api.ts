@@ -35,7 +35,7 @@ export interface Company {
   employees: string
   founded: string
   revenue: string
-  image: string
+  images: string[]
   description: string
   highlights: string[]
   contact: {

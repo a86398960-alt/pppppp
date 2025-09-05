@@ -168,9 +168,9 @@
             </div>
             
             <div class="form-group">
-              <ImageUpload
-                label="Immobilien-Bild"
-                v-model="newProperty.image"
+              <MultiImageUpload
+                label="Immobilien-Bilder"
+                v-model="newProperty.images"
               />
             </div>
             
@@ -187,7 +187,11 @@
           <div v-else-if="error" class="error">{{ error }}</div>
           <div v-else class="properties-list">
             <div v-for="property in properties" :key="property.id" class="property-item">
-              <img :src="property.image" :alt="property.title" class="property-image" />
+              <img 
+                :src="property.images && property.images.length > 0 ? property.images[0] : '/placeholder-image.jpg'" 
+                :alt="property.title" 
+                class="property-image" 
+              />
               <div class="property-info">
                 <h4>{{ property.title }}</h4>
                 <p class="property-price">{{ property.price }}</p>
@@ -251,9 +255,9 @@
             </div>
             
             <div class="form-group">
-              <ImageUpload
-                label="Firmen-Logo"
-                v-model="newCompany.image"
+              <MultiImageUpload
+                label="Firmen-Bilder"
+                v-model="newCompany.images"
               />
             </div>
             
@@ -270,7 +274,11 @@
           <div v-else-if="error" class="error">{{ error }}</div>
           <div v-else class="companies-list">
             <div v-for="company in companies" :key="company.id" class="company-item">
-              <img :src="company.image" :alt="company.name" class="company-logo" />
+              <img 
+                :src="company.images && company.images.length > 0 ? company.images[0] : '/placeholder-image.jpg'" 
+                :alt="company.name" 
+                class="company-logo" 
+              />
               <div class="company-info">
                 <h4>{{ company.name }}</h4>
                 <p class="company-industry">{{ company.industry }}</p>
@@ -292,7 +300,7 @@
 import { ref, onMounted } from 'vue'
 import { propertiesAPI, companiesAPI } from '../services/api'
 import { authService } from '../services/auth'
-import ImageUpload from '../components/ImageUpload.vue'
+import MultiImageUpload from '../components/MultiImageUpload.vue'
 
 const isAuthenticated = ref(false)
 const activeTab = ref('properties')
@@ -316,7 +324,6 @@ const newProperty = ref({
   type: '',
   size: '',
   description: '',
-  image: '',
   rooms: '',
   images: [],
   features: [],
@@ -334,7 +341,7 @@ const newCompany = ref({
   industry: '',
   location: '',
   description: '',
-  image: '',
+  images: [],
   employees: '',
   founded: '',
   revenue: '',
@@ -414,7 +421,6 @@ async function addProperty() {
       type: '',
       size: '',
       description: '',
-      image: '',
       rooms: '',
       images: [],
       features: [],
@@ -474,7 +480,7 @@ async function addCompany() {
       industry: '',
       location: '',
       description: '',
-      image: '',
+      images: [],
       employees: '',
       founded: '',
       revenue: '',
