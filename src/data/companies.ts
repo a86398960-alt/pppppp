@@ -6,7 +6,7 @@ export interface Company {
   employees: string
   founded: string
   revenue: string
-  image: string
+  images: string[]
   description: string
   highlights: string[]
   contact: {
@@ -30,7 +30,7 @@ export const companies: Company[] = [
     employees: '25-50',
     founded: '2019',
     revenue: '2.5M',
-    image: '/WhatsApp Image 2025-09-01 at 21.28.14.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.28.14.jpeg'],
     description: 'Innovative Software-Entwicklung für digitale Lösungen im B2B-Bereich',
     highlights: [
       'Agile Entwicklungsmethoden',
@@ -57,7 +57,7 @@ export const companies: Company[] = [
     employees: '100-200',
     founded: '1995',
     revenue: '15M',
-    image: '/WhatsApp Image 2025-09-01 at 21.33.23.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.33.23.jpeg'],
     description: 'Traditionelles Bauunternehmen mit moderner Ausrichtung und nachhaltigen Konzepten',
     highlights: [
       '30 Jahre Erfahrung',
@@ -83,7 +83,7 @@ export const companies: Company[] = [
     employees: '50-75',
     founded: '2015',
     revenue: '8M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38.jpeg'],
     description: 'Spezialist für nachhaltige Energielösungen und Smart Grid Technologien',
     highlights: [
       'Photovoltaik-Anlagen',
@@ -109,7 +109,7 @@ export const companies: Company[] = [
     employees: '75-100',
     founded: '2010',
     revenue: '12M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38 (1).jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38 (1).jpeg'],
     description: 'Moderne Logistiklösungen für den E-Commerce mit automatisierten Prozessen',
     highlights: [
       'Automatisierte Lager',
@@ -135,7 +135,7 @@ export const companies: Company[] = [
     employees: '30-50',
     founded: '2018',
     revenue: '5M',
-    image: '/WhatsApp Image 2025-09-01 at 21.33.23 (1).jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.33.23 (1).jpeg'],
     description: 'Entwicklung innovativer Medizingeräte für die moderne Diagnostik',
     highlights: [
       'FDA-zugelassene Produkte',
@@ -161,7 +161,7 @@ export const companies: Company[] = [
     employees: '20-30',
     founded: '2012',
     revenue: '3M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg'],
     description: 'Premium Gastronomie-Konzepte mit regionaler Küche und nachhaltigen Zutaten',
     highlights: [
       'Mehrere Standorte',
@@ -187,7 +187,7 @@ export const companies: Company[] = [
     employees: '20-30',
     founded: '2012',
     revenue: '3M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg'],
     description: 'Premium Gastronomie-Konzepte mit regionaler Küche und nachhaltigen Zutaten',
     highlights: [
       'Mehrere Standorte',
@@ -213,7 +213,7 @@ export const companies: Company[] = [
     employees: '20-30',
     founded: '2012',
     revenue: '3M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg'],
     description: 'Premium Gastronomie-Konzepte mit regionaler Küche und nachhaltigen Zutaten',
     highlights: [
       'Mehrere Standorte',
@@ -239,7 +239,7 @@ export const companies: Company[] = [
     employees: '20-30',
     founded: '2012',
     revenue: '3M',
-    image: '/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg',
+    images: ['/WhatsApp Image 2025-09-01 at 21.35.38 (1) copy.jpeg'],
     description: 'Premium Gastronomie-Konzepte mit regionaler Küche und nachhaltigen Zutaten',
     highlights: [
       'Mehrere Standorte',
